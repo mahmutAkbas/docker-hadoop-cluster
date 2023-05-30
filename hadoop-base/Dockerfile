@@ -43,10 +43,17 @@ ENV PATH $PATH:$JAVA_HOME/bin
 RUN mkdir -p /tmp/native
 RUN curl -Ls http://dl.bintray.com/sequenceiq/sequenceiq-bin/hadoop-native-64-2.7.0.tar | tar -x -C /tmp/native
 
-ENV HADOOP_VERSION=3.2.0-SNAPSHOT
-ADD hadoop-${HADOOP_VERSION}.tar.gz /usr/local/
-WORKDIR /usr/local
-RUN ln -s /usr/local/hadoop-${HADOOP_VERSION} /usr/local/hadoop
+RUN \
+  wget http://apache.mirror.anlx.net/hadoop/common/hadoop-2.9.2/hadoop-2.9.2.tar.gz && \
+  tar -xzf hadoop-2.9.2.tar.gz && \
+  mv hadoop-2.9.2 $HADOOP_HOME && \
+  echo "export JAVA_HOME=$JAVA_HOME" >> $HADOOP_HOME/etc/hadoop/hadoop-env.sh && \
+  echo "PATH=$PATH:$HADOOP_HOME/bin" >> ~/.bashrc
+
+#ENV HADOOP_VERSION=3.2.0-SNAPSHOT
+#ADD hadoop-${HADOOP_VERSION}.tar.gz /usr/local/
+#WORKDIR /usr/local
+#RUN ln -s /usr/local/hadoop-${HADOOP_VERSION} /usr/local/hadoop
 
 ENV HADOOP_HOME /usr/local/hadoop
 ENV HADOOP_COMMON_HOME /usr/local/hadoop
